@@ -56,6 +56,7 @@ public class WeatherDto {
         this.humidity = humidity;
         this.city = city;
     }
+
     public static WeatherDto fromModel(Weather weather) {
         return new WeatherDto(weather.getId(), weather.getEmail(),
                 weather.getTemp(), weather.getHumidity(), weather.getCity());

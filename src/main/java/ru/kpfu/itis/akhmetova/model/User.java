@@ -1,6 +1,9 @@
 package ru.kpfu.itis.akhmetova.model;
 
+import ru.kpfu.itis.akhmetova.dto.UserDto;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -9,9 +12,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
-    private String password;//хешировать
-    //моделька для погоды, сохранять ее в бд, значит надо распарсить джсон основные поля влажность температура и облачность паттерн констреинт на почту и пароль
+    private String password;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Appeal> appeals;
 
     public User() {}
 
@@ -47,9 +52,21 @@ public class User {
         this.password = password;
     }
 
+    public List<Appeal> getAppeals() {
+        return appeals;
+    }
+
+    public void setAppeals(List<Appeal> appeals) {
+        this.appeals = appeals;
+    }
+
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public static User fromDto(UserDto userDto){
+        return new User(userDto.getName(), userDto.getEmail(), userDto.getPassword());
     }
 }

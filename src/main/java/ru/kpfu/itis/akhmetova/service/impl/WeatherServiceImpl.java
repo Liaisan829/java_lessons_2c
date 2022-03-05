@@ -6,6 +6,7 @@ import ru.kpfu.itis.akhmetova.model.Weather;
 import ru.kpfu.itis.akhmetova.repository.WeatherRepository;
 import ru.kpfu.itis.akhmetova.service.WeatherService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,6 +25,11 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public WeatherDto save(Weather weather) {
-        return WeatherDto.fromModel(weatherRepository.save(new Weather(weather.getEmail(), weather.getTemp(), weather.getHumidity(), weather.getCity())));
+        return WeatherDto.fromModel(weatherRepository.save(weather));
+    }
+
+    @Override
+    public List<WeatherDto> getAllWeatherByCity(String city) {
+        return weatherRepository.findAllWeatherByCity(city).stream().map(WeatherDto::fromModel).collect(Collectors.toList());
     }
 }
