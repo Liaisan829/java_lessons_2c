@@ -1,6 +1,7 @@
 package ru.kpfu.itis.akhmetova.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.akhmetova.dto.CreateUserDto;
 import ru.kpfu.itis.akhmetova.dto.UserDto;
@@ -8,7 +9,7 @@ import ru.kpfu.itis.akhmetova.service.UserService;
 
 import javax.validation.Valid;
 
-@RestController
+@Controller
 public class UserController {
 
     private final UserService userService;
@@ -29,7 +30,14 @@ public class UserController {
 //    }
 
     @PostMapping("/user")
+    @ResponseBody
     public UserDto createUser(@Valid @RequestBody CreateUserDto createUserDto) {
         return userService.save(createUserDto);
+    }
+
+    @PostMapping("/sign-up")
+    public String signUp(@ModelAttribute(name = "user") CreateUserDto createUserDto){
+        userService.save(createUserDto);
+        return "sign_up_success";
     }
 }

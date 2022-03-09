@@ -9,11 +9,12 @@ import ru.kpfu.itis.akhmetova.dto.UserDto;
 import ru.kpfu.itis.akhmetova.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     //нет метода реализованного по поиску по почте, пишем сами
     //дальше парсится и реализацию пишет спринг
-    UserDto getUserByEmail(String email);
+    Optional<User> getUserByEmail(String email);
 
     //jpql - язык, работает с сущностями, а не таблицами в отличие он sql native
     //они нужны чтоб писать сложные запросы

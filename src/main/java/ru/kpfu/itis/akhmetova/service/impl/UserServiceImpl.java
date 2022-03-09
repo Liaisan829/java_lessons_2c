@@ -1,10 +1,10 @@
 package ru.kpfu.itis.akhmetova.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.kpfu.itis.akhmetova.dto.CreateUserDto;
 import ru.kpfu.itis.akhmetova.dto.UserDto;
-import ru.kpfu.itis.akhmetova.helper.PasswordHelper;
 import ru.kpfu.itis.akhmetova.model.User;
 import ru.kpfu.itis.akhmetova.repository.UserRepository;
 import ru.kpfu.itis.akhmetova.service.UserService;
@@ -15,16 +15,18 @@ import java.util.stream.Collectors;
 @Component
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        return userRepository.getUserByEmail(email).stream().map(UserDto::fromModel).findFirst().orElse(null);
     }
 
 //    @Override
@@ -39,6 +41,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(CreateUserDto createUserDto) {
-        return UserDto.fromModel(userRepository.save(new User(createUserDto.getName(), createUserDto.getEmail(), PasswordHelper.encrypt(createUserDto.getPassword()))));
+        User user = new User(createUserDto.getName(), createUserDto.getEmail());
+        user.setPassword(encoder.encode(createUserDto.getPassword()));
+        return UserDto.fromModel(userRepository.save(user));
     }
 }
