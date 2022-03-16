@@ -1,6 +1,7 @@
 package ru.kpfu.itis.akhmetova.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,7 +44,8 @@ public class WeatherController {
     }
 
     @GetMapping("/weatherSecond")
-    public String getWeather(@RequestParam Optional<String> city, @RequestParam String email) throws IOException {
+    public String getWeather(@RequestParam Optional<String> city, Authentication authentication) throws IOException {
+        String email = authentication.getName();
         UserDto userDto = userService.getUserByEmail(email);
         if (userDto != null) {
             String result = dataAboutWeather.getDataAboutWeather(city.orElse("Kazan"));

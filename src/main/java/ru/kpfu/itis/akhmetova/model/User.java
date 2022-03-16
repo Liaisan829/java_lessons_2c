@@ -34,6 +34,11 @@ public class User {
     )
     private Set<Role> roles;
 
+    private boolean enabled;
+
+    @Column(length = 64)
+    private String verificationCode;
+
     public User() {
     }
 
@@ -85,10 +90,27 @@ public class User {
         this.roles = roles;
     }
 
-    public User(String name, String email, String password) {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public User(String name, String email, String password, String verificationCode) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.verificationCode = verificationCode;
     }
 
     public User(String name, String email) {
@@ -97,6 +119,6 @@ public class User {
     }
 
     public static User fromDto(UserDto userDto) {
-        return new User(userDto.getName(), userDto.getEmail(), userDto.getPassword());
+        return new User(userDto.getName(), userDto.getEmail(), userDto.getPassword(), userDto.getVerificationCode());
     }
 }
